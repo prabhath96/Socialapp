@@ -1,0 +1,64 @@
+// Function to create a new profile
+const createProfile = async () => {
+    const name = document.getElementById("name").value;
+    const email = document.getElementById("email").value;
+    const phone = document.getElementById("phone").value;
+    const username = document.getElementById("username").value;
+  
+    // Send a POST request to the backend to create a new profile
+    const response = await fetch("/api/create-profile", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ name, email, phone, username })
+    });
+  
+    if (response.ok) {
+      // If the response is successful, display the new profile on the page
+      const newProfile = await response.json();
+      displayProfile(newProfile);
+    } else {
+      // If the response is not successful, display an error message
+      const { error } = await response.json();
+      alert(`Error creating profile: ${error}`);
+    }
+  };
+  
+  // Function to get all users
+  const getUsers = async () => {
+    // Send a GET request to the backend to get all users
+    const response = await fetch("/api/get-users");
+  
+    if (response.ok) {
+      // If the response is successful, display the list of users on the page
+      const users = await response.json();
+      displayUsers(users);
+    } else {
+      // If the response is not successful, display an error message
+      alert("Error getting users");
+    }
+  };
+  
+  // Function to display a single profile
+  const displayProfile = (profile) => {
+    const profileContainer = document.getElementById("profile-container");
+    profileContainer.innerHTML = `
+      <h2>${profile.name}</h2>
+      <p>Email: ${profile.email}</p>
+      <p>Phone: ${profile.phone}</p>
+      <p>Username: ${profile.username}</p>
+    `;
+  };
+  
+  // Function to display a list of users
+  const displayUsers = (users) => {
+    const userList = document.getElementById("user-list");
+    userList.innerHTML = `
+      <h2>All Users</h2>
+      <ul>
+        ${users.map(user => `<li>${user.name} (${user.username})</li>`).join("")}
+      </ul>
+    `;
+  };
+  
